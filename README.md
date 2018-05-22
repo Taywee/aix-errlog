@@ -1,2 +1,2 @@
-# aix-errpt
-Ruby gem for interfacing with AIX's errpt logging facilities.  Uses ruby ffi.
+# aix-errlog
+Ruby gem for interfacing with AIX's error logging facilities.  Uses ruby ffi.
