@@ -73,6 +73,14 @@
     
     <li ><a href="#method-c-new">::new</a>
     
+    <li ><a href="#method-i-detail">#detail</a>
+    
+    <li ><a href="#method-i-errpt">#errpt</a>
+    
+    <li ><a href="#method-i-parse_errpt">#parse_errpt</a>
+    
+    <li ><a href="#method-i-symptom">#symptom</a>
+    
   </ul>
 </div>
 
@@ -94,6 +102,11 @@ the <a
 href="Errlog.html#method-i-forward_each">AIX::Errlog::Errlog#forward_each</a>
 and <a
 href="Errlog.html#method-i-reverse_each">AIX::Errlog::Errlog#reverse_each</a>.</p>
+
+<p>Unfortunately, the retreived detail and symptom fields aren&#39;t horribly
+useful, and IBM has presented no API for parsing these correctly, so the
+only canonical path to getting the correct detail and symptom data is
+through a call to the errpt command.</p>
 
   </section>
 
@@ -141,19 +154,6 @@ href="Errlog.html#method-i-reverse_each">AIX::Errlog::Errlog#reverse_each</a>.</
       <div id="attribute-i-crcid" class="method-detail">
         <div class="method-heading attribute-method-heading">
           <span class="method-name">crcid</span><span
-            class="attribute-access-type">[R]</span>
-        </div>
-
-        <div class="method-description">
-        
-        
-        
-        </div>
-      </div>
-      
-      <div id="attribute-i-detail" class="method-detail">
-        <div class="method-heading attribute-method-heading">
-          <span class="method-name">detail</span><span
             class="attribute-access-type">[R]</span>
         </div>
 
@@ -294,6 +294,32 @@ href="Errlog.html#method-i-reverse_each">AIX::Errlog::Errlog#reverse_each</a>.</
         </div>
       </div>
       
+      <div id="attribute-i-raw_detail" class="method-detail">
+        <div class="method-heading attribute-method-heading">
+          <span class="method-name">raw_detail</span><span
+            class="attribute-access-type">[R]</span>
+        </div>
+
+        <div class="method-description">
+        
+        
+        
+        </div>
+      </div>
+      
+      <div id="attribute-i-raw_symptom" class="method-detail">
+        <div class="method-heading attribute-method-heading">
+          <span class="method-name">raw_symptom</span><span
+            class="attribute-access-type">[R]</span>
+        </div>
+
+        <div class="method-description">
+        
+        
+        
+        </div>
+      </div>
+      
       <div id="attribute-i-rclass" class="method-detail">
         <div class="method-heading attribute-method-heading">
           <span class="method-name">rclass</span><span
@@ -336,19 +362,6 @@ href="Errlog.html#method-i-reverse_each">AIX::Errlog::Errlog#reverse_each</a>.</
       <div id="attribute-i-sequence" class="method-detail">
         <div class="method-heading attribute-method-heading">
           <span class="method-name">sequence</span><span
-            class="attribute-access-type">[R]</span>
-        </div>
-
-        <div class="method-description">
-        
-        
-        
-        </div>
-      </div>
-      
-      <div id="attribute-i-symptom" class="method-detail">
-        <div class="method-heading attribute-method-heading">
-          <span class="method-name">symptom</span><span
             class="attribute-access-type">[R]</span>
         </div>
 
@@ -453,7 +466,7 @@ href="Errlog.html#method-i-reverse_each">AIX::Errlog::Errlog#reverse_each</a>.</
 
           
           <div class="method-source-code" id="new-source">
-            <pre><span class="ruby-comment"># File lib/aix/errlog/entry.rb, line 16</span>
+            <pre><span class="ruby-comment"># File lib/aix/errlog/entry.rb, line 23</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-identifier">raw</span>)
   <span class="ruby-ivar">@magic</span> = <span class="ruby-identifier">raw</span>[<span class="ruby-value">:el_magic</span>]
   <span class="ruby-ivar">@sequence</span> = <span class="ruby-identifier">raw</span>[<span class="ruby-value">:el_sequence</span>]
@@ -474,13 +487,162 @@ href="Errlog.html#method-i-reverse_each">AIX::Errlog::Errlog#reverse_each</a>.</
   <span class="ruby-ivar">@connwhere</span> = <span class="ruby-identifier">raw</span>[<span class="ruby-value">:el_connwhere</span>].<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">freeze</span>
   <span class="ruby-ivar">@flags</span> = <span class="ruby-identifier">raw</span>[<span class="ruby-value">:el_flags</span>]
   <span class="ruby-identifier">length</span> = <span class="ruby-identifier">raw</span>[<span class="ruby-value">:el_detail_length</span>]
-  <span class="ruby-ivar">@detail</span> = <span class="ruby-identifier">raw</span>[<span class="ruby-value">:el_detail_data</span>].<span class="ruby-identifier">to_ptr</span>.<span class="ruby-identifier">get_bytes</span>(<span class="ruby-value">0</span>, <span class="ruby-identifier">length</span>).<span class="ruby-identifier">freeze</span>
+  <span class="ruby-ivar">@raw_detail</span> = <span class="ruby-identifier">raw</span>[<span class="ruby-value">:el_detail_data</span>].<span class="ruby-identifier">to_ptr</span>.<span class="ruby-identifier">get_bytes</span>(<span class="ruby-value">0</span>, <span class="ruby-identifier">length</span>).<span class="ruby-identifier">freeze</span>
   <span class="ruby-identifier">length</span> = <span class="ruby-identifier">raw</span>[<span class="ruby-value">:el_symptom_length</span>]
-  <span class="ruby-ivar">@symptom</span> = <span class="ruby-identifier">raw</span>[<span class="ruby-value">:el_symptom_data</span>].<span class="ruby-identifier">to_ptr</span>.<span class="ruby-identifier">get_bytes</span>(<span class="ruby-value">0</span>, <span class="ruby-identifier">length</span>).<span class="ruby-identifier">freeze</span>
+  <span class="ruby-ivar">@raw_symptom</span> = <span class="ruby-identifier">raw</span>[<span class="ruby-value">:el_symptom_data</span>].<span class="ruby-identifier">to_ptr</span>.<span class="ruby-identifier">get_bytes</span>(<span class="ruby-value">0</span>, <span class="ruby-identifier">length</span>).<span class="ruby-identifier">freeze</span>
   <span class="ruby-ivar">@dup_count</span> = <span class="ruby-identifier">raw</span>[<span class="ruby-value">:el_errdup</span>][<span class="ruby-value">:ed_dupcount</span>]
   <span class="ruby-ivar">@dup_time1</span> = <span class="ruby-constant">Time</span>.<span class="ruby-identifier">at</span>(<span class="ruby-identifier">raw</span>[<span class="ruby-value">:el_errdup</span>][<span class="ruby-value">:ed_time1</span>]).<span class="ruby-identifier">freeze</span>
   <span class="ruby-ivar">@dup_time2</span> = <span class="ruby-constant">Time</span>.<span class="ruby-identifier">at</span>(<span class="ruby-identifier">raw</span>[<span class="ruby-value">:el_errdup</span>][<span class="ruby-value">:ed_time2</span>]).<span class="ruby-identifier">freeze</span>
   <span class="ruby-ivar">@wparid</span> = <span class="ruby-identifier">raw</span>[<span class="ruby-value">:el_wparid</span>].<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">freeze</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+    </section>
+  
+     <section id="public-instance-5Buntitled-5D-method-details" class="method-section">
+       <header>
+         <h3>Public Instance Methods</h3>
+       </header>
+
+    
+      <div id="method-i-detail" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">detail</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+          
+
+          
+          <div class="method-source-code" id="detail-source">
+            <pre><span class="ruby-comment"># File lib/aix/errlog/entry.rb, line 66</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">detail</span>
+  <span class="ruby-identifier">parse_errpt</span> <span class="ruby-keyword">unless</span> <span class="ruby-ivar">@parsed</span>
+  <span class="ruby-ivar">@detail</span> 
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-errpt" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">errpt</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+          
+
+          
+          <div class="method-source-code" id="errpt-source">
+            <pre><span class="ruby-comment"># File lib/aix/errlog/entry.rb, line 52</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">errpt</span>
+  <span class="ruby-ivar">@errpt</span> <span class="ruby-operator">||=</span> <span class="ruby-node">%x(errpt -al#{@sequence})</span>.<span class="ruby-identifier">freeze</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-parse_errpt" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">parse_errpt</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+          
+
+          
+          <div class="method-source-code" id="parse_errpt-source">
+            <pre><span class="ruby-comment"># File lib/aix/errlog/entry.rb, line 56</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">parse_errpt</span>
+  <span class="ruby-keyword">unless</span> <span class="ruby-ivar">@parsed</span>
+    <span class="ruby-ivar">@detail</span>, <span class="ruby-ivar">@symptom</span> = <span class="ruby-identifier">errpt</span>.<span class="ruby-identifier">match</span>(<span class="ruby-constant">PARSE_REGEX</span>).<span class="ruby-identifier">captures</span>
+    <span class="ruby-ivar">@detail</span> <span class="ruby-operator">||=</span> <span class="ruby-string">&#39;&#39;</span>.<span class="ruby-identifier">freeze</span>
+    <span class="ruby-ivar">@symptom</span> <span class="ruby-operator">||=</span> <span class="ruby-string">&#39;&#39;</span>.<span class="ruby-identifier">freeze</span>
+    <span class="ruby-ivar">@detail</span>.<span class="ruby-identifier">freeze</span>
+    <span class="ruby-ivar">@symptom</span>.<span class="ruby-identifier">freeze</span>
+    <span class="ruby-ivar">@parsed</span> = <span class="ruby-keyword">true</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-symptom" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">symptom</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+          
+
+          
+          <div class="method-source-code" id="symptom-source">
+            <pre><span class="ruby-comment"># File lib/aix/errlog/entry.rb, line 70</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">symptom</span>
+  <span class="ruby-identifier">parse_errpt</span> <span class="ruby-keyword">unless</span> <span class="ruby-ivar">@parsed</span>
+  <span class="ruby-ivar">@symptom</span> 
 <span class="ruby-keyword">end</span></pre>
           </div>
           

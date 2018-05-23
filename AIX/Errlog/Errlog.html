@@ -71,6 +71,8 @@
 
   <ul class="link-list" role="directory">
     
+    <li ><a href="#method-c-match">::match</a>
+    
     <li ><a href="#method-c-new">::new</a>
     
     <li ><a href="#method-c-open">::open</a>
@@ -79,47 +81,7 @@
     
     <li ><a href="#method-i-forward_each">#forward_each</a>
     
-    <li ><a href="#method-i-match_class">#match_class</a>
-    
-    <li ><a href="#method-i-match_connwhere">#match_connwhere</a>
-    
-    <li ><a href="#method-i-match_crcid">#match_crcid</a>
-    
-    <li ><a href="#method-i-match_detail_data">#match_detail_data</a>
-    
-    <li ><a href="#method-i-match_errdiag">#match_errdiag</a>
-    
-    <li ><a href="#method-i-match_flag_err64">#match_flag_err64</a>
-    
-    <li ><a href="#method-i-match_flag_errdup">#match_flag_errdup</a>
-    
-    <li ><a href="#method-i-match_in">#match_in</a>
-    
-    <li ><a href="#method-i-match_label">#match_label</a>
-    
-    <li ><a href="#method-i-match_machineid">#match_machineid</a>
-    
-    <li ><a href="#method-i-match_nodeid">#match_nodeid</a>
-    
-    <li ><a href="#method-i-match_rclass">#match_rclass</a>
-    
-    <li ><a href="#method-i-match_resource">#match_resource</a>
-    
-    <li ><a href="#method-i-match_rtype">#match_rtype</a>
-    
-    <li ><a href="#method-i-match_sequence">#match_sequence</a>
-    
-    <li ><a href="#method-i-match_symptom_data">#match_symptom_data</a>
-    
-    <li ><a href="#method-i-match_timestamp">#match_timestamp</a>
-    
-    <li ><a href="#method-i-match_type">#match_type</a>
-    
-    <li ><a href="#method-i-match_vpd_ibm">#match_vpd_ibm</a>
-    
-    <li ><a href="#method-i-match_vpd_user">#match_vpd_user</a>
-    
-    <li ><a href="#method-i-match_wparid">#match_wparid</a>
+    <li ><a href="#method-i-match">#match</a>
     
     <li ><a href="#method-i-reverse_each">#reverse_each</a>
     
@@ -159,9 +121,10 @@ you&#39;ll get jumbled results). While one of these enumerators as active,
 trying to re-invoke one will raise an <a
 href="Errors/EnumeratorError.html">Errors::EnumeratorError</a>.</p>
 
-<p>If you need to do complex matching, use the match_* methods in here to
-create <a href="Match.html">Match</a> objects to work with.  You can see <a
-href="Match.html">Match</a> for more details as to how to create those.</p>
+<p>If you need to do complex matching, use <a
+href="Errlog.html#method-i-match">match</a> or <a
+href="Errlog.html#method-c-match">::match</a> to build a match expression
+using a DSL.</p>
 
 <p>A simple example, showing how to get a list of all labels of all log
 entries in forward order which contain the string &#39;KILL&#39; in their
@@ -174,19 +137,19 @@ above 1000, or that happen in December 2016 and have a sequence ID below
 <span class="ruby-identifier">require</span> <span class="ruby-string">&#39;aix/errlog&#39;</span>
 
 <span class="ruby-constant">AIX</span><span class="ruby-operator">::</span><span class="ruby-constant">Errlog</span>.<span class="ruby-identifier">open</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">log</span><span class="ruby-operator">|</span>
-  <span class="ruby-identifier">log</span>.<span class="ruby-identifier">forward_each</span>(<span class="ruby-value">match:</span> (
-    <span class="ruby-identifier">log</span>.<span class="ruby-identifier">match_label</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-string">&#39;KILL&#39;</span>) <span class="ruby-operator">&amp;</span> (
+  <span class="ruby-identifier">log</span>.<span class="ruby-identifier">forward_each</span>(<span class="ruby-value">match:</span> <span class="ruby-identifier">log</span>.<span class="ruby-identifier">match</span> {
+    <span class="ruby-identifier">label</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-string">&#39;KILL&#39;</span>) <span class="ruby-operator">&amp;</span> (
       (
-        (<span class="ruby-identifier">log</span>.<span class="ruby-identifier">match_sequence</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">1000</span>) <span class="ruby-operator">&amp;</span>
-        (<span class="ruby-identifier">log</span>.<span class="ruby-identifier">match_timestamp</span> <span class="ruby-operator">&gt;=</span> <span class="ruby-constant">DateTime</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">2017</span>, <span class="ruby-value">1</span>, <span class="ruby-value">1</span>)) <span class="ruby-operator">&amp;</span>
-        (<span class="ruby-identifier">log</span>.<span class="ruby-identifier">match_timestamp</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">DateTime</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">2017</span>, <span class="ruby-value">2</span>, <span class="ruby-value">1</span>))
+        (<span class="ruby-identifier">sequence</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">1000</span>) <span class="ruby-operator">&amp;</span>
+        (<span class="ruby-identifier">timestamp</span> <span class="ruby-operator">&gt;=</span> <span class="ruby-constant">DateTime</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">2017</span>, <span class="ruby-value">1</span>, <span class="ruby-value">1</span>)) <span class="ruby-operator">&amp;</span>
+        (<span class="ruby-identifier">timestamp</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">DateTime</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">2017</span>, <span class="ruby-value">2</span>, <span class="ruby-value">1</span>))
       ) <span class="ruby-operator">|</span> (
-        (<span class="ruby-identifier">log</span>.<span class="ruby-identifier">match_sequence</span> <span class="ruby-operator">&lt;</span> <span class="ruby-value">500</span>) <span class="ruby-operator">&amp;</span>
-        (<span class="ruby-identifier">log</span>.<span class="ruby-identifier">match_timestamp</span> <span class="ruby-operator">&gt;=</span> <span class="ruby-constant">DateTime</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">2016</span>, <span class="ruby-value">12</span>, <span class="ruby-value">1</span>)) <span class="ruby-operator">&amp;</span>
-        (<span class="ruby-identifier">log</span>.<span class="ruby-identifier">match_timestamp</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">DateTime</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">2017</span>, <span class="ruby-value">1</span>, <span class="ruby-value">1</span>))
+        (<span class="ruby-identifier">sequence</span> <span class="ruby-operator">&lt;</span> <span class="ruby-value">500</span>) <span class="ruby-operator">&amp;</span>
+        (<span class="ruby-identifier">timestamp</span> <span class="ruby-operator">&gt;=</span> <span class="ruby-constant">DateTime</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">2016</span>, <span class="ruby-value">12</span>, <span class="ruby-value">1</span>)) <span class="ruby-operator">&amp;</span>
+        (<span class="ruby-identifier">timestamp</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">DateTime</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">2017</span>, <span class="ruby-value">1</span>, <span class="ruby-value">1</span>))
       )
     )
-  )).<span class="ruby-identifier">map</span>(<span class="ruby-operator">&amp;</span><span class="ruby-value">:label</span>)
+  }).<span class="ruby-identifier">map</span>(<span class="ruby-operator">&amp;</span><span class="ruby-value">:label</span>)
 <span class="ruby-keyword">end</span>
 </pre>
 
@@ -214,6 +177,58 @@ href="Match.html">Match</a> tree from scratch in C.</p>
        </header>
 
     
+      <div id="method-c-match" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">match</span><span
+            class="method-args">(&amp;block)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Used to build a match expression using a DSL.  This simply calls
+instance_eval on <a href="Match.html">Match</a>, so remember the semantics
+of block scope.  If you have a local <code>sequence</code> variable, for
+instance, you&#39;ll need to use an explicit self to escape that:</p>
+
+<pre>[2] pry(main)&gt; AIX::Errlog::Errlog.match { sequence }
+=&gt; #&lt;AIX::Errlog::Match:0xeb32a4df @left=:sequence, @operator=nil, @right=nil&gt;
+[3] pry(main)&gt; sequence = 5
+=&gt; 5
+[4] pry(main)&gt; AIX::Errlog::Errlog.match { sequence }
+=&gt; 5
+[5] pry(main)&gt; AIX::Errlog::Errlog.match { self.sequence }
+=&gt; #&lt;AIX::Errlog::Match:0xcb7d8c03 @left=:sequence, @operator=nil, @right=nil&gt;
+[6] pry(main)&gt; AIX::Errlog::Errlog.match { self.sequence &gt; sequence }
+=&gt; #&lt;AIX::Errlog::Match:0x7be0bbf5 @left=:sequence, @operator=:gt, @right=5&gt;</pre>
+
+<p>In any case, this function lets you use a block as a shortcut to call a
+bunch of public class methods on the <a href="Match.html">Match</a> class,
+in order to build complex match expressions, as shown in the summary of
+this class.</p>
+          
+          
+
+          
+          <div class="method-source-code" id="match-source">
+            <pre><span class="ruby-comment"># File lib/aix/errlog/errlog.rb, line 235</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">match</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+  <span class="ruby-constant">Match</span>.<span class="ruby-identifier">instance_eval</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
       <div id="method-c-new" class="method-detail ">
         
         <div class="method-heading">
@@ -234,7 +249,7 @@ the semantics of the fopen mode.</p>
 
           
           <div class="method-source-code" id="new-source">
-            <pre><span class="ruby-comment"># File lib/aix/errlog/errlog.rb, line 73</span>
+            <pre><span class="ruby-comment"># File lib/aix/errlog/errlog.rb, line 72</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-identifier">path</span>=<span class="ruby-string">&#39;/var/adm/ras/errlog&#39;</span>.<span class="ruby-identifier">freeze</span>, <span class="ruby-identifier">mode</span>=<span class="ruby-string">&#39;r&#39;</span>.<span class="ruby-identifier">freeze</span>)
   <span class="ruby-identifier">mode_r</span> = <span class="ruby-identifier">mode</span>.<span class="ruby-identifier">include?</span> <span class="ruby-string">&#39;r&#39;</span>
   <span class="ruby-identifier">mode_w</span> = <span class="ruby-identifier">mode</span>.<span class="ruby-identifier">include?</span> <span class="ruby-string">&#39;w&#39;</span>
@@ -305,7 +320,7 @@ block will be the return value of this.</p>
 
           
           <div class="method-source-code" id="open-source">
-            <pre><span class="ruby-comment"># File lib/aix/errlog/errlog.rb, line 116</span>
+            <pre><span class="ruby-comment"># File lib/aix/errlog/errlog.rb, line 115</span>
 <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">open</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)
   <span class="ruby-identifier">errlog</span> = <span class="ruby-identifier">new</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)
   <span class="ruby-keyword">if</span> <span class="ruby-identifier">block_given?</span>
@@ -358,7 +373,7 @@ that try to use the errlog handle may be called.</p>
 
           
           <div class="method-source-code" id="close-source">
-            <pre><span class="ruby-comment"># File lib/aix/errlog/errlog.rb, line 134</span>
+            <pre><span class="ruby-comment"># File lib/aix/errlog/errlog.rb, line 133</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">close</span>
   <span class="ruby-keyword">unless</span> <span class="ruby-ivar">@handle</span>.<span class="ruby-identifier">nil?</span>
     <span class="ruby-identifier">status</span> = <span class="ruby-constant">Lib</span>.<span class="ruby-identifier">errlog_close</span>(<span class="ruby-ivar">@handle</span>)
@@ -419,7 +434,7 @@ sequence number, because the sequence number is 32 bits and might wrap.</p>
 
           
           <div class="method-source-code" id="forward_each-source">
-            <pre><span class="ruby-comment"># File lib/aix/errlog/errlog.rb, line 168</span>
+            <pre><span class="ruby-comment"># File lib/aix/errlog/errlog.rb, line 167</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">forward_each</span>(<span class="ruby-value">match:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-value">sequence:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
   <span class="ruby-identifier">raise</span> <span class="ruby-string">&#39;match and sequence must not be both specified&#39;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">match</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">sequence</span>
 
@@ -437,11 +452,11 @@ sequence number, because the sequence number is 32 bits and might wrap.</p>
       </div>
 
     
-      <div id="method-i-match_class" class="method-detail ">
+      <div id="method-i-match" class="method-detail ">
         
         <div class="method-heading">
-          <span class="method-name">match_class</span><span
-            class="method-args">()</span>
+          <span class="method-name">match</span><span
+            class="method-args">(&amp;block)</span>
           
           <span class="method-click-advice">click to toggle source</span>
           
@@ -450,696 +465,15 @@ sequence number, because the sequence number is 32 bits and might wrap.</p>
 
         <div class="method-description">
           
-          <p><a href="Match.html">Match</a> convenience function.  Gets a Leaf match for
-comparing against class.</p>
+          <p>Calls <a href="Errlog.html#method-c-match">::match</a></p>
           
           
 
           
-          <div class="method-source-code" id="match_class-source">
-            <pre><span class="ruby-comment"># File lib/aix/errlog/errlog.rb, line 249</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">match_class</span>
-  <span class="ruby-constant">Match</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">left:</span> <span class="ruby-value">:class</span>)
-<span class="ruby-keyword">end</span></pre>
-          </div>
-          
-        </div>
-
-        
-
-        
-      </div>
-
-    
-      <div id="method-i-match_connwhere" class="method-detail ">
-        
-        <div class="method-heading">
-          <span class="method-name">match_connwhere</span><span
-            class="method-args">()</span>
-          
-          <span class="method-click-advice">click to toggle source</span>
-          
-        </div>
-        
-
-        <div class="method-description">
-          
-          <p><a href="Match.html">Match</a> convenience function.  Gets a Leaf match for
-comparing against connwhere.</p>
-          
-          
-
-          
-          <div class="method-source-code" id="match_connwhere-source">
-            <pre><span class="ruby-comment"># File lib/aix/errlog/errlog.rb, line 296</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">match_connwhere</span>
-  <span class="ruby-constant">Match</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">left:</span> <span class="ruby-value">:connwhere</span>)
-<span class="ruby-keyword">end</span></pre>
-          </div>
-          
-        </div>
-
-        
-
-        
-      </div>
-
-    
-      <div id="method-i-match_crcid" class="method-detail ">
-        
-        <div class="method-heading">
-          <span class="method-name">match_crcid</span><span
-            class="method-args">()</span>
-          
-          <span class="method-click-advice">click to toggle source</span>
-          
-        </div>
-        
-
-        <div class="method-description">
-          
-          <p><a href="Match.html">Match</a> convenience function.  Gets a Leaf match for
-comparing against crcid.</p>
-          
-          
-
-          
-          <div class="method-source-code" id="match_crcid-source">
-            <pre><span class="ruby-comment"># File lib/aix/errlog/errlog.rb, line 231</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">match_crcid</span>
-  <span class="ruby-constant">Match</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">left:</span> <span class="ruby-value">:crcid</span>)
-<span class="ruby-keyword">end</span></pre>
-          </div>
-          
-        </div>
-
-        
-
-        
-      </div>
-
-    
-      <div id="method-i-match_detail_data" class="method-detail ">
-        
-        <div class="method-heading">
-          <span class="method-name">match_detail_data</span><span
-            class="method-args">()</span>
-          
-          <span class="method-click-advice">click to toggle source</span>
-          
-        </div>
-        
-
-        <div class="method-description">
-          
-          <p><a href="Match.html">Match</a> convenience function.  Gets a Leaf match for
-comparing against detail_data.</p>
-          
-          
-
-          
-          <div class="method-source-code" id="match_detail_data-source">
-            <pre><span class="ruby-comment"># File lib/aix/errlog/errlog.rb, line 314</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">match_detail_data</span>
-  <span class="ruby-constant">Match</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">left:</span> <span class="ruby-value">:detail_data</span>)
-<span class="ruby-keyword">end</span></pre>
-          </div>
-          
-        </div>
-
-        
-
-        
-      </div>
-
-    
-      <div id="method-i-match_errdiag" class="method-detail ">
-        
-        <div class="method-heading">
-          <span class="method-name">match_errdiag</span><span
-            class="method-args">()</span>
-          
-          <span class="method-click-advice">click to toggle source</span>
-          
-        </div>
-        
-
-        <div class="method-description">
-          
-          <p><a href="Match.html">Match</a> convenience function.  Gets a Leaf match for
-comparing against errdiag.</p>
-          
-          
-
-          
-          <div class="method-source-code" id="match_errdiag-source">
-            <pre><span class="ruby-comment"># File lib/aix/errlog/errlog.rb, line 326</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">match_errdiag</span>
-  <span class="ruby-constant">Match</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">left:</span> <span class="ruby-value">:errdiag</span>)
-<span class="ruby-keyword">end</span></pre>
-          </div>
-          
-        </div>
-
-        
-
-        
-      </div>
-
-    
-      <div id="method-i-match_flag_err64" class="method-detail ">
-        
-        <div class="method-heading">
-          <span class="method-name">match_flag_err64</span><span
-            class="method-args">()</span>
-          
-          <span class="method-click-advice">click to toggle source</span>
-          
-        </div>
-        
-
-        <div class="method-description">
-          
-          <p><a href="Match.html">Match</a> convenience function.  Gets a Leaf match for
-comparing against flag_err64.</p>
-          
-          
-
-          
-          <div class="method-source-code" id="match_flag_err64-source">
-            <pre><span class="ruby-comment"># File lib/aix/errlog/errlog.rb, line 302</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">match_flag_err64</span>
-  <span class="ruby-constant">Match</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">left:</span> <span class="ruby-value">:flag_err64</span>)
-<span class="ruby-keyword">end</span></pre>
-          </div>
-          
-        </div>
-
-        
-
-        
-      </div>
-
-    
-      <div id="method-i-match_flag_errdup" class="method-detail ">
-        
-        <div class="method-heading">
-          <span class="method-name">match_flag_errdup</span><span
-            class="method-args">()</span>
-          
-          <span class="method-click-advice">click to toggle source</span>
-          
-        </div>
-        
-
-        <div class="method-description">
-          
-          <p><a href="Match.html">Match</a> convenience function.  Gets a Leaf match for
-comparing against flag_errdup.</p>
-          
-          
-
-          
-          <div class="method-source-code" id="match_flag_errdup-source">
-            <pre><span class="ruby-comment"># File lib/aix/errlog/errlog.rb, line 308</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">match_flag_errdup</span>
-  <span class="ruby-constant">Match</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">left:</span> <span class="ruby-value">:flag_errdup</span>)
-<span class="ruby-keyword">end</span></pre>
-          </div>
-          
-        </div>
-
-        
-
-        
-      </div>
-
-    
-      <div id="method-i-match_in" class="method-detail ">
-        
-        <div class="method-heading">
-          <span class="method-name">match_in</span><span
-            class="method-args">()</span>
-          
-          <span class="method-click-advice">click to toggle source</span>
-          
-        </div>
-        
-
-        <div class="method-description">
-          
-          <p><a href="Match.html">Match</a> convenience function.  Gets a Leaf match for
-comparing against in.</p>
-          
-          
-
-          
-          <div class="method-source-code" id="match_in-source">
-            <pre><span class="ruby-comment"># File lib/aix/errlog/errlog.rb, line 290</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">match_in</span>
-  <span class="ruby-constant">Match</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">left:</span> <span class="ruby-value">:in</span>)
-<span class="ruby-keyword">end</span></pre>
-          </div>
-          
-        </div>
-
-        
-
-        
-      </div>
-
-    
-      <div id="method-i-match_label" class="method-detail ">
-        
-        <div class="method-heading">
-          <span class="method-name">match_label</span><span
-            class="method-args">()</span>
-          
-          <span class="method-click-advice">click to toggle source</span>
-          
-        </div>
-        
-
-        <div class="method-description">
-          
-          <p><a href="Match.html">Match</a> convenience function.  Gets a Leaf match for
-comparing against label.</p>
-          
-          
-
-          
-          <div class="method-source-code" id="match_label-source">
-            <pre><span class="ruby-comment"># File lib/aix/errlog/errlog.rb, line 219</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">match_label</span>
-  <span class="ruby-constant">Match</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">left:</span> <span class="ruby-value">:label</span>)
-<span class="ruby-keyword">end</span></pre>
-          </div>
-          
-        </div>
-
-        
-
-        
-      </div>
-
-    
-      <div id="method-i-match_machineid" class="method-detail ">
-        
-        <div class="method-heading">
-          <span class="method-name">match_machineid</span><span
-            class="method-args">()</span>
-          
-          <span class="method-click-advice">click to toggle source</span>
-          
-        </div>
-        
-
-        <div class="method-description">
-          
-          <p><a href="Match.html">Match</a> convenience function.  Gets a Leaf match for
-comparing against machineid.</p>
-          
-          
-
-          
-          <div class="method-source-code" id="match_machineid-source">
-            <pre><span class="ruby-comment"># File lib/aix/errlog/errlog.rb, line 237</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">match_machineid</span>
-  <span class="ruby-constant">Match</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">left:</span> <span class="ruby-value">:machineid</span>)
-<span class="ruby-keyword">end</span></pre>
-          </div>
-          
-        </div>
-
-        
-
-        
-      </div>
-
-    
-      <div id="method-i-match_nodeid" class="method-detail ">
-        
-        <div class="method-heading">
-          <span class="method-name">match_nodeid</span><span
-            class="method-args">()</span>
-          
-          <span class="method-click-advice">click to toggle source</span>
-          
-        </div>
-        
-
-        <div class="method-description">
-          
-          <p><a href="Match.html">Match</a> convenience function.  Gets a Leaf match for
-comparing against nodeid.</p>
-          
-          
-
-          
-          <div class="method-source-code" id="match_nodeid-source">
-            <pre><span class="ruby-comment"># File lib/aix/errlog/errlog.rb, line 243</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">match_nodeid</span>
-  <span class="ruby-constant">Match</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">left:</span> <span class="ruby-value">:nodeid</span>)
-<span class="ruby-keyword">end</span></pre>
-          </div>
-          
-        </div>
-
-        
-
-        
-      </div>
-
-    
-      <div id="method-i-match_rclass" class="method-detail ">
-        
-        <div class="method-heading">
-          <span class="method-name">match_rclass</span><span
-            class="method-args">()</span>
-          
-          <span class="method-click-advice">click to toggle source</span>
-          
-        </div>
-        
-
-        <div class="method-description">
-          
-          <p><a href="Match.html">Match</a> convenience function.  Gets a Leaf match for
-comparing against rclass.</p>
-          
-          
-
-          
-          <div class="method-source-code" id="match_rclass-source">
-            <pre><span class="ruby-comment"># File lib/aix/errlog/errlog.rb, line 267</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">match_rclass</span>
-  <span class="ruby-constant">Match</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">left:</span> <span class="ruby-value">:rclass</span>)
-<span class="ruby-keyword">end</span></pre>
-          </div>
-          
-        </div>
-
-        
-
-        
-      </div>
-
-    
-      <div id="method-i-match_resource" class="method-detail ">
-        
-        <div class="method-heading">
-          <span class="method-name">match_resource</span><span
-            class="method-args">()</span>
-          
-          <span class="method-click-advice">click to toggle source</span>
-          
-        </div>
-        
-
-        <div class="method-description">
-          
-          <p><a href="Match.html">Match</a> convenience function.  Gets a Leaf match for
-comparing against resource.</p>
-          
-          
-
-          
-          <div class="method-source-code" id="match_resource-source">
-            <pre><span class="ruby-comment"># File lib/aix/errlog/errlog.rb, line 261</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">match_resource</span>
-  <span class="ruby-constant">Match</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">left:</span> <span class="ruby-value">:resource</span>)
-<span class="ruby-keyword">end</span></pre>
-          </div>
-          
-        </div>
-
-        
-
-        
-      </div>
-
-    
-      <div id="method-i-match_rtype" class="method-detail ">
-        
-        <div class="method-heading">
-          <span class="method-name">match_rtype</span><span
-            class="method-args">()</span>
-          
-          <span class="method-click-advice">click to toggle source</span>
-          
-        </div>
-        
-
-        <div class="method-description">
-          
-          <p><a href="Match.html">Match</a> convenience function.  Gets a Leaf match for
-comparing against rtype.</p>
-          
-          
-
-          
-          <div class="method-source-code" id="match_rtype-source">
-            <pre><span class="ruby-comment"># File lib/aix/errlog/errlog.rb, line 273</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">match_rtype</span>
-  <span class="ruby-constant">Match</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">left:</span> <span class="ruby-value">:rtype</span>)
-<span class="ruby-keyword">end</span></pre>
-          </div>
-          
-        </div>
-
-        
-
-        
-      </div>
-
-    
-      <div id="method-i-match_sequence" class="method-detail ">
-        
-        <div class="method-heading">
-          <span class="method-name">match_sequence</span><span
-            class="method-args">()</span>
-          
-          <span class="method-click-advice">click to toggle source</span>
-          
-        </div>
-        
-
-        <div class="method-description">
-          
-          <p><a href="Match.html">Match</a> convenience function.  Gets a Leaf match for
-comparing against sequence.</p>
-          
-          
-
-          
-          <div class="method-source-code" id="match_sequence-source">
-            <pre><span class="ruby-comment"># File lib/aix/errlog/errlog.rb, line 213</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">match_sequence</span>
-  <span class="ruby-constant">Match</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">left:</span> <span class="ruby-value">:sequence</span>)
-<span class="ruby-keyword">end</span></pre>
-          </div>
-          
-        </div>
-
-        
-
-        
-      </div>
-
-    
-      <div id="method-i-match_symptom_data" class="method-detail ">
-        
-        <div class="method-heading">
-          <span class="method-name">match_symptom_data</span><span
-            class="method-args">()</span>
-          
-          <span class="method-click-advice">click to toggle source</span>
-          
-        </div>
-        
-
-        <div class="method-description">
-          
-          <p><a href="Match.html">Match</a> convenience function.  Gets a Leaf match for
-comparing against symptom_data.</p>
-          
-          
-
-          
-          <div class="method-source-code" id="match_symptom_data-source">
-            <pre><span class="ruby-comment"># File lib/aix/errlog/errlog.rb, line 320</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">match_symptom_data</span>
-  <span class="ruby-constant">Match</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">left:</span> <span class="ruby-value">:symptom_data</span>)
-<span class="ruby-keyword">end</span></pre>
-          </div>
-          
-        </div>
-
-        
-
-        
-      </div>
-
-    
-      <div id="method-i-match_timestamp" class="method-detail ">
-        
-        <div class="method-heading">
-          <span class="method-name">match_timestamp</span><span
-            class="method-args">()</span>
-          
-          <span class="method-click-advice">click to toggle source</span>
-          
-        </div>
-        
-
-        <div class="method-description">
-          
-          <p><a href="Match.html">Match</a> convenience function.  Gets a Leaf match for
-comparing against timestamp.</p>
-          
-          
-
-          
-          <div class="method-source-code" id="match_timestamp-source">
-            <pre><span class="ruby-comment"># File lib/aix/errlog/errlog.rb, line 225</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">match_timestamp</span>
-  <span class="ruby-constant">Match</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">left:</span> <span class="ruby-value">:timestamp</span>)
-<span class="ruby-keyword">end</span></pre>
-          </div>
-          
-        </div>
-
-        
-
-        
-      </div>
-
-    
-      <div id="method-i-match_type" class="method-detail ">
-        
-        <div class="method-heading">
-          <span class="method-name">match_type</span><span
-            class="method-args">()</span>
-          
-          <span class="method-click-advice">click to toggle source</span>
-          
-        </div>
-        
-
-        <div class="method-description">
-          
-          <p><a href="Match.html">Match</a> convenience function.  Gets a Leaf match for
-comparing against type.</p>
-          
-          
-
-          
-          <div class="method-source-code" id="match_type-source">
-            <pre><span class="ruby-comment"># File lib/aix/errlog/errlog.rb, line 255</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">match_type</span>
-  <span class="ruby-constant">Match</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">left:</span> <span class="ruby-value">:type</span>)
-<span class="ruby-keyword">end</span></pre>
-          </div>
-          
-        </div>
-
-        
-
-        
-      </div>
-
-    
-      <div id="method-i-match_vpd_ibm" class="method-detail ">
-        
-        <div class="method-heading">
-          <span class="method-name">match_vpd_ibm</span><span
-            class="method-args">()</span>
-          
-          <span class="method-click-advice">click to toggle source</span>
-          
-        </div>
-        
-
-        <div class="method-description">
-          
-          <p><a href="Match.html">Match</a> convenience function.  Gets a Leaf match for
-comparing against vpd_ibm.</p>
-          
-          
-
-          
-          <div class="method-source-code" id="match_vpd_ibm-source">
-            <pre><span class="ruby-comment"># File lib/aix/errlog/errlog.rb, line 279</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">match_vpd_ibm</span>
-  <span class="ruby-constant">Match</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">left:</span> <span class="ruby-value">:vpd_ibm</span>)
-<span class="ruby-keyword">end</span></pre>
-          </div>
-          
-        </div>
-
-        
-
-        
-      </div>
-
-    
-      <div id="method-i-match_vpd_user" class="method-detail ">
-        
-        <div class="method-heading">
-          <span class="method-name">match_vpd_user</span><span
-            class="method-args">()</span>
-          
-          <span class="method-click-advice">click to toggle source</span>
-          
-        </div>
-        
-
-        <div class="method-description">
-          
-          <p><a href="Match.html">Match</a> convenience function.  Gets a Leaf match for
-comparing against vpd_user.</p>
-          
-          
-
-          
-          <div class="method-source-code" id="match_vpd_user-source">
-            <pre><span class="ruby-comment"># File lib/aix/errlog/errlog.rb, line 285</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">match_vpd_user</span>
-  <span class="ruby-constant">Match</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">left:</span> <span class="ruby-value">:vpd_user</span>)
-<span class="ruby-keyword">end</span></pre>
-          </div>
-          
-        </div>
-
-        
-
-        
-      </div>
-
-    
-      <div id="method-i-match_wparid" class="method-detail ">
-        
-        <div class="method-heading">
-          <span class="method-name">match_wparid</span><span
-            class="method-args">()</span>
-          
-          <span class="method-click-advice">click to toggle source</span>
-          
-        </div>
-        
-
-        <div class="method-description">
-          
-          <p><a href="Match.html">Match</a> convenience function.  Gets a Leaf match for
-comparing against wparid.</p>
-          
-          
-
-          
-          <div class="method-source-code" id="match_wparid-source">
-            <pre><span class="ruby-comment"># File lib/aix/errlog/errlog.rb, line 332</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">match_wparid</span>
-  <span class="ruby-constant">Match</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">left:</span> <span class="ruby-value">:wparid</span>)
+          <div class="method-source-code" id="match-source">
+            <pre><span class="ruby-comment"># File lib/aix/errlog/errlog.rb, line 211</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">match</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+  <span class="ruby-constant">Errlog</span>.<span class="ruby-identifier">match</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
 <span class="ruby-keyword">end</span></pre>
           </div>
           
@@ -1194,7 +528,7 @@ sequence number, because the sequence number is 32 bits and might wrap.</p>
 
           
           <div class="method-source-code" id="reverse_each-source">
-            <pre><span class="ruby-comment"># File lib/aix/errlog/errlog.rb, line 202</span>
+            <pre><span class="ruby-comment"># File lib/aix/errlog/errlog.rb, line 201</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">reverse_each</span>(<span class="ruby-value">match:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-value">sequence:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
   <span class="ruby-identifier">raise</span> <span class="ruby-string">&#39;match and sequence must not be both specified&#39;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">match</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">sequence</span>
 
