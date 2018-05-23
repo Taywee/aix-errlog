@@ -156,7 +156,8 @@ something like that, you&#39;ll need multuple instances of this open,
 otherwise it will fail (the handle operates as a cursor, so if you try to
 re-invoke one before it is finished, the cursor will get reset, and
 you&#39;ll get jumbled results). While one of these enumerators as active,
-trying to re-invoke one will raise an EnumeratorError.</p>
+trying to re-invoke one will raise an <a
+href="Errors/EnumeratorError.html">Errors::EnumeratorError</a>.</p>
 
 <p>If you need to do complex matching, use the match_* methods in here to
 create <a href="Match.html">Match</a> objects to work with.  You can see <a
@@ -403,9 +404,10 @@ position, if find_sequence or find_first have already been called).</p>
 
 <p>An active enumerator can not be nested within another active enumerator,
 including the block form of this.  If you invoke any of the each_ methods
-while another has not finished and exited, you&#39;ll raise an
-EnumeratorError.  You can create an enumerator of one within the other, as
-long as you don&#39;t activate it until the first one has exited.</p>
+while another has not finished and exited, you&#39;ll raise an <a
+href="Errors/EnumeratorError.html">Errors::EnumeratorError</a>.  You can
+create an enumerator of one within the other, as long as you don&#39;t
+activate it until the first one has exited.</p>
 
 <p>Warning: if the sequence does not exist (which is common when error logs
 are cleaned), no entries will be returned, even if they follow the sequence
@@ -1177,9 +1179,10 @@ position, if find_sequence or find_first have already been called).</p>
 
 <p>An active enumerator can not be nested within another active enumerator,
 including the block form of this.  If you invoke any of the each_ methods
-while another has not finished and exited, you&#39;ll raise an
-EnumeratorError.  You can create an enumerator of one within the other, as
-long as you don&#39;t activate it until the first one has exited.</p>
+while another has not finished and exited, you&#39;ll raise an <a
+href="Errors/EnumeratorError.html">Errors::EnumeratorError</a>.  You can
+create an enumerator of one within the other, as long as you don&#39;t
+activate it until the first one has exited.</p>
 
 <p>Warning: if the sequence does not exist (which is common when error logs
 are cleaned), no entries will be returned, even if they follow the sequence
