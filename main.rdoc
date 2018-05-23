@@ -1,3 +1,4 @@
 This is the documentation for the aix-errlog ruby gem.
 
-To get started, look at Win32::Errlog::Errlog for useful methods.
+To get started, look at AIX::Errlog::Errlog.  The best and most convenient
+entrypoint is probably AIX::Errlog.open

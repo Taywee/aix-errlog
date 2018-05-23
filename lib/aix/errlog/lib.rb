@@ -8,15 +8,13 @@ module AIX
     # The ffi interface to the errlog library.
     #
     # You should never need to access this directly.  All necessary functionality
-    # should be accessible via AIX::Errlog
+    # should be accessible via Errlog.
     module Lib
       extend FFI::Library
       ffi_lib 'liberrlog.a(shr_64.o)'
 
       typedef :pointer, :errlog_handle_t
       typedef :pointer, :errlog_handle_t_ptr
-      typedef :pointer, :errlog_match_t_ptr
-      typedef :pointer, :errlog_entry_t_ptr
 
       Err = enum(
         :ok, 0,
@@ -32,6 +30,44 @@ module AIX
       Direction = enum(
         :forward, Constants::LE_FORWARD,
         :reverse, Constants::LE_REVERSE,
+      )
+
+      Operator = enum(
+        :equal, Constants::LE_OP_EQUAL,
+        :ne, Constants::LE_OP_NE,
+        :substr, Constants::LE_OP_SUBSTR,
+        :lt, Constants::LE_OP_LT,
+        :le, Constants::LE_OP_LE,
+        :gt, Constants::LE_OP_GT,
+        :ge, Constants::LE_OP_GE,
+        :not, Constants::LE_OP_NOT,
+        :and, Constants::LE_OP_AND,
+        :or, Constants::LE_OP_OR,
+        :xor, Constants::LE_OP_XOR,
+      )
+
+      Match = enum(
+        :sequence, Constants::LE_MATCH_SEQUENCE,
+        :label, Constants::LE_MATCH_LABEL,
+        :timestamp, Constants::LE_MATCH_TIMESTAMP,
+        :crcid, Constants::LE_MATCH_CRCID,
+        :machineid, Constants::LE_MATCH_MACHINEID,
+        :nodeid, Constants::LE_MATCH_NODEID,
+        :class, Constants::LE_MATCH_CLASS,
+        :type, Constants::LE_MATCH_TYPE,
+        :resource, Constants::LE_MATCH_RESOURCE,
+        :rclass, Constants::LE_MATCH_RCLASS,
+        :rtype, Constants::LE_MATCH_RTYPE,
+        :vpd_ibm, Constants::LE_MATCH_VPD_IBM,
+        :vpd_user, Constants::LE_MATCH_VPD_USER,
+        :in, Constants::LE_MATCH_IN,
+        :connwhere, Constants::LE_MATCH_CONNWHERE,
+        :flag_err64, Constants::LE_MATCH_FLAG_ERR64,
+        :flag_errdup, Constants::LE_MATCH_FLAG_ERRDUP,
+        :detail_data, Constants::LE_MATCH_DETAIL_DATA,
+        :symptom_data, Constants::LE_MATCH_SYMPTOM_DATA,
+        :errdiag, Constants::LE_MATCH_ERRDIAG,
+        :wparid, Constants::LE_MATCH_WPARID,
       )
 
       class Errdup < FFI::Struct
@@ -74,7 +110,7 @@ module AIX
       class ErrlogMatch1U < FFI::Union
         layout(
           :emu_left, :pointer,
-          :emu_field, :uint,
+          :emu_field, Match,
         )
       end
 
@@ -88,7 +124,7 @@ module AIX
 
       class ErrlogMatch < FFI::Struct
         layout(
-          :em_op, :uint,
+          :em_op, Operator,
           :emu1, ErrlogMatch1U,
           :emu2, ErrlogMatch2U,
         )
@@ -107,19 +143,19 @@ module AIX
 
       attach_function :errlog_find_first, [
         :errlog_handle_t, # handle
-        :errlog_match_t_ptr, # filter
-        :errlog_entry_t_ptr, # result
+        ErrlogMatch, # filter
+        ErrlogEntry, # result
       ], Err
 
       attach_function :errlog_find_next, [
         :errlog_handle_t, # handle
-        :errlog_entry_t_ptr, # result
+        ErrlogEntry, # result
       ], Err
 
       attach_function :errlog_find_sequence, [
         :errlog_handle_t, # handle
         :int, # sequence
-        :errlog_entry_t_ptr, # result
+        ErrlogEntry, # result
       ], Err
 
       attach_function :errlog_set_direction, [

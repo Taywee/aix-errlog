@@ -1,6 +1,11 @@
 module AIX
   module Errlog
     module Errors
+      class EnumeratorError < StandardError
+        def initialize
+          super 'Do not nest enumerators, or invoke another one while the first is still active.'
+        end
+      end
       class ErrlogError < StandardError
       end
       class InvalidArgument < ErrlogError
