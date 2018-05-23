@@ -30,7 +30,7 @@ module AIX
     # operates as a cursor, so if you try to re-invoke one before it is
     # finished, the cursor will get reset, and you'll get jumbled results).
     # While one of these enumerators as active, trying to re-invoke one will
-    # raise an EnumeratorError.
+    # raise an Errors::EnumeratorError.
     #
     # If you need to do complex matching, use the #match_* methods in here to
     # create Match objects to work with.  You can see Match for more details as
@@ -156,7 +156,7 @@ module AIX
       # An active enumerator can not be nested within another active enumerator,
       # including the block form of this.  If you invoke any of the #each_
       # methods while another has not finished and exited, you'll raise an
-      # EnumeratorError.  You can create an enumerator of one within the other,
+      # Errors::EnumeratorError.  You can create an enumerator of one within the other,
       # as long as you don't activate it until the first one has exited.
       #
       # Warning: if the sequence does not exist (which is common when error logs
@@ -190,7 +190,7 @@ module AIX
       # An active enumerator can not be nested within another active enumerator,
       # including the block form of this.  If you invoke any of the #each_
       # methods while another has not finished and exited, you'll raise an
-      # EnumeratorError.  You can create an enumerator of one within the other,
+      # Errors::EnumeratorError.  You can create an enumerator of one within the other,
       # as long as you don't activate it until the first one has exited.
       #
       # Warning: if the sequence does not exist (which is common when error logs
@@ -393,7 +393,7 @@ module AIX
       # An active enumerator can not be nested within another active enumerator,
       # including the block form of this.  If you invoke any of the #each_
       # methods while another has not finished and exited, you'll raise an
-      # EnumeratorError.  You can create an enumerator of one within the other,
+      # Errors::EnumeratorError.  You can create an enumerator of one within the other,
       # as long as you don't activate it until the first one has exited.
       #
       # Warning: if the sequence does not exist (which is common when error logs
