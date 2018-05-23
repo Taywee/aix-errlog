@@ -11,8 +11,12 @@ Gem::Specification.new do |spec|
   spec.description = 'Ruby FFI interface for AIX errlog'
   spec.files      = [
     'lib/aix/errlog.rb',
-    'lib/aix/errlog/ffi.rb',
     'lib/aix/errlog/constants.rb',
+    'lib/aix/errlog/entry.rb',
+    'lib/aix/errlog/errlog.rb',
+    'lib/aix/errlog/errors.rb',
+    'lib/aix/errlog/match.rb',
+    'lib/aix/errlog/lib.rb',
   ]
 
   spec.add_dependency('ffi', '~>1.9')
