@@ -220,6 +220,12 @@ module AIX
       # In any case, this function lets you use a block as a shortcut to call a
       # bunch of public class methods on the Match class, in order to build
       # complex match expressions, as shown in the summary of this class.
+      #
+      # Warning:  Note that the block for this uses a custom self, through
+      # +instance_eval+, so you won't be able to access instance variables
+      # directly.  You'll have to put them in through locals.  If this isn't a
+      # good enough tradeoff, you can build the Match object directly through
+      # its public methods.
       def self.match(&block)
         Match.instance_eval(&block)
       end

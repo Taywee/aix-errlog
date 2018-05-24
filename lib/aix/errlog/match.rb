@@ -69,7 +69,7 @@ module AIX
         when Symbol
           @struct[:emu1][:emu_field] = @left
         else
-          raise "left should be either a Match or Symbol object, but is #{@left}"
+          raise "left should be either a Match or Symbol object, but is a #{@left.class}"
         end
 
         case @right
@@ -82,7 +82,7 @@ module AIX
         when DateTime
           @struct[:emu2][:emu_intvalue] = @right.to_time.to_i
         else
-          raise "left should be either a Match or Symbol object, but is #{@left}"
+          raise "Right should be either a Match, String, Numeric, Time, or DateTime object, but is a #{@right.class}"
         end
 
         @struct
