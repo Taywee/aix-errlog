@@ -9,8 +9,7 @@ module AIX
     # A class that is useful for building errlog matchers.
     #
     # You usually won't need to access this class directly; you'll be able to
-    # create instances of it indirectly through the field accessors that are
-    # available in Errlog.
+    # create instances of it indirectly through the use of Errlog::match
     #
     # You can build field matchers using the methods on the errlog and standard
     # logical operators, and there are standard conversions for certain things
@@ -18,18 +17,18 @@ module AIX
     # entries only in January 2018 with +FOO+ in the label somewhere, you cold
     # use a match like this with an Errlog instance.
     #
-    #   (
-    #     (errlog.match_timestamp >= DateTime.new(2018, 1, 1)) &
-    #     (errlog.match_timestamp < DateTime.new(2018, 2, 1)) &
-    #     errlog.match_label.include?('FOO')
-    #   )
+    #   errlog.match {
+    #     (timestamp >= DateTime.new(2018, 1, 1)) &
+    #     (timestamp < DateTime.new(2018, 2, 1)) &
+    #     label.include?('FOO')
+    #   }
     #
     # It really is that easy.  The rest of the magic is done for you behind the
     # scenes, as long as you follow the rules and know how to make these matches
     # in the C equivalent.  Note that there must always be a Match on the left
     # side of all comparisons, so something like 
     #
-    #   DateTime.new(2018, 1, 1) <= errlog.match_timestamp
+    #   DateTime.new(2018, 1, 1) <= errlog.match{timestamp}
     #
     # is not possible.
     # 
@@ -150,6 +149,132 @@ module AIX
           left: self,
           operator: :not,
         )
+      end
+
+      ##
+      # Match convenience function.  Gets a Leaf match for comparing against
+      # sequence.
+      def self.sequence
+        new(left: :sequence)
+      end
+      ##
+      # Match convenience function.  Gets a Leaf match for comparing against
+      # label.
+      def self.label
+        new(left: :label)
+      end
+      ##
+      # Match convenience function.  Gets a Leaf match for comparing against
+      # timestamp.
+      def self.timestamp
+        new(left: :timestamp)
+      end
+      ##
+      # Match convenience function.  Gets a Leaf match for comparing against
+      # crcid.
+      def self.crcid
+        new(left: :crcid)
+      end
+      ##
+      # Match convenience function.  Gets a Leaf match for comparing against
+      # machineid.
+      def self.machineid
+        new(left: :machineid)
+      end
+      ##
+      # Match convenience function.  Gets a Leaf match for comparing against
+      # nodeid.
+      def self.nodeid
+        new(left: :nodeid)
+      end
+      ##
+      # Match convenience function.  Gets a Leaf match for comparing against
+      # class.
+      def self.class
+        new(left: :class)
+      end
+      ##
+      # Match convenience function.  Gets a Leaf match for comparing against
+      # type.
+      def self.type
+        new(left: :type)
+      end
+      ##
+      # Match convenience function.  Gets a Leaf match for comparing against
+      # resource.
+      def self.resource
+        new(left: :resource)
+      end
+      ##
+      # Match convenience function.  Gets a Leaf match for comparing against
+      # rclass.
+      def self.rclass
+        new(left: :rclass)
+      end
+      ##
+      # Match convenience function.  Gets a Leaf match for comparing against
+      # rtype.
+      def self.rtype
+        new(left: :rtype)
+      end
+      ##
+      # Match convenience function.  Gets a Leaf match for comparing against
+      # vpd_ibm.
+      def self.vpd_ibm
+        new(left: :vpd_ibm)
+      end
+      ##
+      # Match convenience function.  Gets a Leaf match for comparing against
+      # vpd_user.
+      def self.vpd_user
+        new(left: :vpd_user)
+      end
+      ##
+      # Match convenience function.  Gets a Leaf match for comparing against in.
+      def self.in
+        new(left: :in)
+      end
+      ##
+      # Match convenience function.  Gets a Leaf match for comparing against
+      # connwhere.
+      def self.connwhere
+        new(left: :connwhere)
+      end
+      ##
+      # Match convenience function.  Gets a Leaf match for comparing against
+      # flag_err64.
+      def self.flag_err64
+        new(left: :flag_err64)
+      end
+      ##
+      # Match convenience function.  Gets a Leaf match for comparing against
+      # flag_errdup.
+      def self.flag_errdup
+        new(left: :flag_errdup)
+      end
+      ##
+      # Match convenience function.  Gets a Leaf match for comparing against
+      # detail_data.
+      def self.detail_data
+        new(left: :detail_data)
+      end
+      ##
+      # Match convenience function.  Gets a Leaf match for comparing against
+      # symptom_data.
+      def self.symptom_data
+        new(left: :symptom_data)
+      end
+      ##
+      # Match convenience function.  Gets a Leaf match for comparing against
+      # errdiag.
+      def self.errdiag
+        new(left: :errdiag)
+      end
+      ##
+      # Match convenience function.  Gets a Leaf match for comparing against
+      # wparid.
+      def self.wparid
+        new(left: :wparid)
       end
     end
   end

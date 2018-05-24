@@ -32,9 +32,8 @@ module AIX
     # While one of these enumerators as active, trying to re-invoke one will
     # raise an Errors::EnumeratorError.
     #
-    # If you need to do complex matching, use the #match_* methods in here to
-    # create Match objects to work with.  You can see Match for more details as
-    # to how to create those.
+    # If you need to do complex matching, use #match or ::match to build a match
+    # expression using a DSL.
     #
     # A simple example, showing how to get a list of all labels of all log
     # entries in forward order which contain the string 'KILL' in their label
@@ -47,19 +46,19 @@ module AIX
     #   require 'aix/errlog'
     #
     #   AIX::Errlog.open do |log|
-    #     log.forward_each(match: (
-    #       log.match_label.include?('KILL') & (
+    #     log.forward_each(match: log.match {
+    #       label.include?('KILL') & (
     #         (
-    #           (log.match_sequence > 1000) &
-    #           (log.match_timestamp >= DateTime.new(2017, 1, 1)) &
-    #           (log.match_timestamp < DateTime.new(2017, 2, 1))
+    #           (sequence > 1000) &
+    #           (timestamp >= DateTime.new(2017, 1, 1)) &
+    #           (timestamp < DateTime.new(2017, 2, 1))
     #         ) | (
-    #           (log.match_sequence < 500) &
-    #           (log.match_timestamp >= DateTime.new(2016, 12, 1)) &
-    #           (log.match_timestamp < DateTime.new(2017, 1, 1))
+    #           (sequence < 500) &
+    #           (timestamp >= DateTime.new(2016, 12, 1)) &
+    #           (timestamp < DateTime.new(2017, 1, 1))
     #         )
     #       )
-    #     )).map(&:label)
+    #     }).map(&:label)
     #   end
     #
     # Certainly, that looks a little complex, but it is a bit more efficient
@@ -208,129 +207,33 @@ module AIX
       end
 
       ##
-      # Match convenience function.  Gets a Leaf match for comparing against
-      # sequence.
-      def match_sequence
-        Match.new(left: :sequence)
+      # Calls ::match
+      def match(&block)
+        Errlog.match(&block)
       end
+
       ##
-      # Match convenience function.  Gets a Leaf match for comparing against
-      # label.
-      def match_label
-        Match.new(left: :label)
-      end
-      ##
-      # Match convenience function.  Gets a Leaf match for comparing against
-      # timestamp.
-      def match_timestamp
-        Match.new(left: :timestamp)
-      end
-      ##
-      # Match convenience function.  Gets a Leaf match for comparing against
-      # crcid.
-      def match_crcid
-        Match.new(left: :crcid)
-      end
-      ##
-      # Match convenience function.  Gets a Leaf match for comparing against
-      # machineid.
-      def match_machineid
-        Match.new(left: :machineid)
-      end
-      ##
-      # Match convenience function.  Gets a Leaf match for comparing against
-      # nodeid.
-      def match_nodeid
-        Match.new(left: :nodeid)
-      end
-      ##
-      # Match convenience function.  Gets a Leaf match for comparing against
-      # class.
-      def match_class
-        Match.new(left: :class)
-      end
-      ##
-      # Match convenience function.  Gets a Leaf match for comparing against
-      # type.
-      def match_type
-        Match.new(left: :type)
-      end
-      ##
-      # Match convenience function.  Gets a Leaf match for comparing against
-      # resource.
-      def match_resource
-        Match.new(left: :resource)
-      end
-      ##
-      # Match convenience function.  Gets a Leaf match for comparing against
-      # rclass.
-      def match_rclass
-        Match.new(left: :rclass)
-      end
-      ##
-      # Match convenience function.  Gets a Leaf match for comparing against
-      # rtype.
-      def match_rtype
-        Match.new(left: :rtype)
-      end
-      ##
-      # Match convenience function.  Gets a Leaf match for comparing against
-      # vpd_ibm.
-      def match_vpd_ibm
-        Match.new(left: :vpd_ibm)
-      end
-      ##
-      # Match convenience function.  Gets a Leaf match for comparing against
-      # vpd_user.
-      def match_vpd_user
-        Match.new(left: :vpd_user)
-      end
-      ##
-      # Match convenience function.  Gets a Leaf match for comparing against in.
-      def match_in
-        Match.new(left: :in)
-      end
-      ##
-      # Match convenience function.  Gets a Leaf match for comparing against
-      # connwhere.
-      def match_connwhere
-        Match.new(left: :connwhere)
-      end
-      ##
-      # Match convenience function.  Gets a Leaf match for comparing against
-      # flag_err64.
-      def match_flag_err64
-        Match.new(left: :flag_err64)
-      end
-      ##
-      # Match convenience function.  Gets a Leaf match for comparing against
-      # flag_errdup.
-      def match_flag_errdup
-        Match.new(left: :flag_errdup)
-      end
-      ##
-      # Match convenience function.  Gets a Leaf match for comparing against
-      # detail_data.
-      def match_detail_data
-        Match.new(left: :detail_data)
-      end
-      ##
-      # Match convenience function.  Gets a Leaf match for comparing against
-      # symptom_data.
-      def match_symptom_data
-        Match.new(left: :symptom_data)
-      end
-      ##
-      # Match convenience function.  Gets a Leaf match for comparing against
-      # errdiag.
-      def match_errdiag
-        Match.new(left: :errdiag)
-      end
-      ##
-      # Match convenience function.  Gets a Leaf match for comparing against
-      # wparid.
-      def match_wparid
-        Match.new(left: :wparid)
+      # Used to build a match expression using a DSL.  This simply calls
+      # instance_eval on Match, so remember the semantics of block scope.  If
+      # you have a local +sequence+ variable, for instance, you'll need to use
+      # an explicit self to escape that:
+      #
+      #     [2] pry(main)> AIX::Errlog::Errlog.match { sequence }
+      #     => #<AIX::Errlog::Match:0xeb32a4df @left=:sequence, @operator=nil, @right=nil>
+      #     [3] pry(main)> sequence = 5
+      #     => 5
+      #     [4] pry(main)> AIX::Errlog::Errlog.match { sequence }
+      #     => 5
+      #     [5] pry(main)> AIX::Errlog::Errlog.match { self.sequence }
+      #     => #<AIX::Errlog::Match:0xcb7d8c03 @left=:sequence, @operator=nil, @right=nil>
+      #     [6] pry(main)> AIX::Errlog::Errlog.match { self.sequence > sequence }
+      #     => #<AIX::Errlog::Match:0x7be0bbf5 @left=:sequence, @operator=:gt, @right=5>
+      #
+      # In any case, this function lets you use a block as a shortcut to call a
+      # bunch of public class methods on the Match class, in order to build
+      # complex match expressions, as shown in the summary of this class.
+      def self.match(&block)
+        Match.instance_eval(&block)
       end
 
       private
@@ -344,7 +247,7 @@ module AIX
         return if status == :done
         Errors.throw(status, "handle: #{@handle}, sequence: #{id}") unless status == :ok
 
-        Entry.new(entry).freeze
+        Entry.new(entry)
       end
 
       ##
@@ -356,7 +259,7 @@ module AIX
         return if status == :done
         Errors.throw(status, "handle: #{@handle}, match: #{match}") unless status == :ok
 
-        Entry.new(entry).freeze
+        Entry.new(entry)
       end
 
       ##
@@ -366,7 +269,7 @@ module AIX
         status = Lib.errlog_find_next(@handle, entry)
         return if status == :done
         Errors.throw(status, "handle: #{@handle}") unless status == :ok
-        Entry.new(entry).freeze
+        Entry.new(entry)
       end
 
       ##
