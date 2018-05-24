@@ -46,7 +46,7 @@ module AIX
     #   require 'aix/errlog'
     #
     #   AIX::Errlog.open do |log|
-    #     log.forward_each(match: log.match {
+    #     log.forward_each(log.match {
     #       label.include?('KILL') & (
     #         (
     #           (sequence > 1000) &
@@ -142,15 +142,11 @@ module AIX
       # Enumerate log Entry objects in forward order (default is reverse).  If
       # no block is given, returns an enumerator.
       #
+      # The single option is a matcher.  It specifies a match if the passed in
+      # value is a Match, or a sequence ID otherwise.
+      #
       # sequence specifies the sequence ID to start with.  It will be included
-      # in the results if specifed
-      #
-      # match takes a Match object, which specifies which entries to match.
-      #
-      # match and sequence must not be both specified.  If neither are
-      # specified, this simply iterates from the beginning (or from the previous
-      # stopped position, if #find_sequence or #find_first have already been
-      # called).
+      # in the results if specifed.  The match is a more complex matcher.
       #
       # An active enumerator can not be nested within another active enumerator,
       # including the block form of this.  If you invoke any of the #each_
@@ -161,30 +157,24 @@ module AIX
       # Warning: if the sequence does not exist (which is common when error logs
       # are cleaned), no entries will be returned, even if they follow the
       # sequence ID.  If you want all entries based on their sequence number,
-      # use match instead.  You're usually better off using the timestamp
+      # use a Match instead.  You're usually better off using the timestamp
       # instead of sequence number, because the sequence number is 32 bits and
       # might wrap.
-      def forward_each(match: nil, sequence: nil, &block)
-        raise 'match and sequence must not be both specified' if match && sequence
-
-        return to_enum(:forward_each, match: match, sequence: sequence) unless block_given?
+      def forward_each(matcher=nil, &block)
+        return to_enum(:forward_each, matcher) unless block_given?
         set_direction :forward
-        each(match: match, sequence: sequence, &block)
+        each(matcher, &block)
       end
 
       ##
       # Enumerate log Entry objects in reverse order (default is reverse).  If
       # no block is given, returns an enumerator.
       #
+      # The single option is a matcher.  It specifies a match if the passed in
+      # value is a Match, or a sequence ID otherwise.
+      #
       # sequence specifies the sequence ID to start with.  It will be included
-      # in the results if specifed
-      #
-      # match takes a Match object, which specifies which entries to match.
-      #
-      # match and sequence must not be both specified.  If neither are
-      # specified, this simply iterates from the beginning (or from the previous
-      # stopped position, if #find_sequence or #find_first have already been
-      # called).
+      # in the results if specifed.  The match is a more complex matcher.
       #
       # An active enumerator can not be nested within another active enumerator,
       # including the block form of this.  If you invoke any of the #each_
@@ -195,15 +185,13 @@ module AIX
       # Warning: if the sequence does not exist (which is common when error logs
       # are cleaned), no entries will be returned, even if they follow the
       # sequence ID.  If you want all entries based on their sequence number,
-      # use match instead.  You're usually better off using the timestamp
+      # use a Match instead.  You're usually better off using the timestamp
       # instead of sequence number, because the sequence number is 32 bits and
       # might wrap.
-      def reverse_each(match: nil, sequence: nil, &block)
-        raise 'match and sequence must not be both specified' if match && sequence
-
-        return to_enum(:reverse_each, match: match, sequence: sequence) unless block_given?
+      def reverse_each(matcher=nil, &block)
+        return to_enum(:reverse_each, matcher) unless block_given?
         set_direction :reverse
-        each(match: match, sequence: sequence, &block)
+        each(matcher, &block)
       end
 
       ##
@@ -283,15 +271,11 @@ module AIX
       # Enumerate log entries in the order set in #set_direction (default is
       # reverse).
       #
+      # The single option is a matcher.  It specifies a match if the passed in
+      # value is a Match, or a sequence ID otherwise.
+      #
       # sequence specifies the sequence ID to start with.  It will be included
-      # in the results if specifed
-      #
-      # match takes a Match object, which specifies which entries to match.
-      #
-      # match and sequence must not be both specified.  If neither are
-      # specified, this simply iterates from the beginning (or from the previous
-      # stopped position, if #find_sequence or #find_first have already been
-      # called).
+      # in the results if specifed.  The match is a more complex matcher.
       #
       # An active enumerator can not be nested within another active enumerator,
       # including the block form of this.  If you invoke any of the #each_
@@ -302,12 +286,12 @@ module AIX
       # Warning: if the sequence does not exist (which is common when error logs
       # are cleaned), no entries will be returned, even if they follow the
       # sequence ID.  If you want all entries based on their sequence number,
-      # use match instead.  You're usually better off using the timestamp
+      # use a Match instead.  You're usually better off using the timestamp
       # instead of sequence number, because the sequence number is 32 bits and
       # might wrap.
       #
       # The user-facing entry points to this are #forward_each and #reverse_each
-      def each(match: nil, sequence: nil)
+      def each(matcher=nil)
         # Does not return an enumerator, because this will always be called with
         # an active block
 
@@ -315,14 +299,13 @@ module AIX
           raise Errors::EnumeratorError if @enum_active
           @enum_active = true
 
-          if sequence
-            entry = find_sequence(sequence)
-            return if entry.nil?
-            yield entry
-          end
-
-          if match
-            entry = find_first(match)
+          if matcher
+            entry = 
+              if matcher.is_a? Match
+                find_first(matcher)
+              else
+                find_sequence(matcher)
+              end
             return if entry.nil?
             yield entry
           end

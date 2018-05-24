@@ -2,7 +2,7 @@ require 'rubygems'
 
 Gem::Specification.new do |spec|
   spec.name       = 'aix-errlog'
-  spec.version    = '1.1.1'
+  spec.version    = '2.0.0'
   spec.authors    = ['Taylor C. Richberger']
   spec.license    = 'MIT'
   spec.email      = 'tcr@absolute-performance.com'
