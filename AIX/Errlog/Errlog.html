@@ -210,12 +210,18 @@ instance, you&#39;ll need to use an explicit self to escape that:</p>
 bunch of public class methods on the <a href="Match.html">Match</a> class,
 in order to build complex match expressions, as shown in the summary of
 this class.</p>
+
+<p>Warning:  Note that the block for this uses a custom self, through
+<code>instance_eval</code>, so you won&#39;t be able to access instance
+variables directly.  You&#39;ll have to put them in through locals.  If
+this isn&#39;t a good enough tradeoff, you can build the <a
+href="Match.html">Match</a> object directly through its public methods.</p>
           
           
 
           
           <div class="method-source-code" id="match-source">
-            <pre><span class="ruby-comment"># File lib/aix/errlog/errlog.rb, line 223</span>
+            <pre><span class="ruby-comment"># File lib/aix/errlog/errlog.rb, line 229</span>
 <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">match</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
   <span class="ruby-constant">Match</span>.<span class="ruby-identifier">instance_eval</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
 <span class="ruby-keyword">end</span></pre>

@@ -1410,7 +1410,7 @@ you screw up the structure.  Make sure you know what you&#39;re doing.</p>
   <span class="ruby-keyword">when</span> <span class="ruby-constant">Symbol</span>
     <span class="ruby-ivar">@struct</span>[<span class="ruby-value">:emu1</span>][<span class="ruby-value">:emu_field</span>] = <span class="ruby-ivar">@left</span>
   <span class="ruby-keyword">else</span>
-    <span class="ruby-identifier">raise</span> <span class="ruby-node">&quot;left should be either a Match or Symbol object, but is #{@left}&quot;</span>
+    <span class="ruby-identifier">raise</span> <span class="ruby-node">&quot;left should be either a Match or Symbol object, but is a #{@left.class}&quot;</span>
   <span class="ruby-keyword">end</span>
 
   <span class="ruby-keyword">case</span> <span class="ruby-ivar">@right</span>
@@ -1423,7 +1423,7 @@ you screw up the structure.  Make sure you know what you&#39;re doing.</p>
   <span class="ruby-keyword">when</span> <span class="ruby-constant">DateTime</span>
     <span class="ruby-ivar">@struct</span>[<span class="ruby-value">:emu2</span>][<span class="ruby-value">:emu_intvalue</span>] = <span class="ruby-ivar">@right</span>.<span class="ruby-identifier">to_time</span>.<span class="ruby-identifier">to_i</span>
   <span class="ruby-keyword">else</span>
-    <span class="ruby-identifier">raise</span> <span class="ruby-node">&quot;left should be either a Match or Symbol object, but is #{@left}&quot;</span>
+    <span class="ruby-identifier">raise</span> <span class="ruby-node">&quot;Right should be either a Match, String, Numeric, Time, or DateTime object, but is a #{@right.class}&quot;</span>
   <span class="ruby-keyword">end</span>
 
   <span class="ruby-ivar">@struct</span>
