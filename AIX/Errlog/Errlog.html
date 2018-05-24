@@ -137,7 +137,7 @@ above 1000, or that happen in December 2016 and have a sequence ID below
 <span class="ruby-identifier">require</span> <span class="ruby-string">&#39;aix/errlog&#39;</span>
 
 <span class="ruby-constant">AIX</span><span class="ruby-operator">::</span><span class="ruby-constant">Errlog</span>.<span class="ruby-identifier">open</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">log</span><span class="ruby-operator">|</span>
-  <span class="ruby-identifier">log</span>.<span class="ruby-identifier">forward_each</span>(<span class="ruby-value">match:</span> <span class="ruby-identifier">log</span>.<span class="ruby-identifier">match</span> {
+  <span class="ruby-identifier">log</span>.<span class="ruby-identifier">forward_each</span>(<span class="ruby-identifier">log</span>.<span class="ruby-identifier">match</span> {
     <span class="ruby-identifier">label</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-string">&#39;KILL&#39;</span>) <span class="ruby-operator">&amp;</span> (
       (
         (<span class="ruby-identifier">sequence</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">1000</span>) <span class="ruby-operator">&amp;</span>
@@ -215,7 +215,7 @@ this class.</p>
 
           
           <div class="method-source-code" id="match-source">
-            <pre><span class="ruby-comment"># File lib/aix/errlog/errlog.rb, line 235</span>
+            <pre><span class="ruby-comment"># File lib/aix/errlog/errlog.rb, line 223</span>
 <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">match</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
   <span class="ruby-constant">Match</span>.<span class="ruby-identifier">instance_eval</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
 <span class="ruby-keyword">end</span></pre>
@@ -395,7 +395,7 @@ that try to use the errlog handle may be called.</p>
         
         <div class="method-heading">
           <span class="method-name">forward_each</span><span
-            class="method-args">(match: nil, sequence: nil, &amp;block)</span>
+            class="method-args">(matcher=nil, &amp;block)</span>
           
           <span class="method-click-advice">click to toggle source</span>
           
@@ -407,15 +407,11 @@ that try to use the errlog handle may be called.</p>
           <p>Enumerate log <a href="Entry.html">Entry</a> objects in forward order
 (default is reverse).  If no block is given, returns an enumerator.</p>
 
+<p>The single option is a matcher.  It specifies a match if the passed in
+value is a <a href="Match.html">Match</a>, or a sequence ID otherwise.</p>
+
 <p>sequence specifies the sequence ID to start with.  It will be included in
-the results if specifed</p>
-
-<p>match takes a <a href="Match.html">Match</a> object, which specifies which
-entries to match.</p>
-
-<p>match and sequence must not be both specified.  If neither are specified,
-this simply iterates from the beginning (or from the previous stopped
-position, if find_sequence or find_first have already been called).</p>
+the results if specifed.  The match is a more complex matcher.</p>
 
 <p>An active enumerator can not be nested within another active enumerator,
 including the block form of this.  If you invoke any of the each_ methods
@@ -426,21 +422,20 @@ activate it until the first one has exited.</p>
 
 <p>Warning: if the sequence does not exist (which is common when error logs
 are cleaned), no entries will be returned, even if they follow the sequence
-ID.  If you want all entries based on their sequence number, use match
-instead.  You&#39;re usually better off using the timestamp instead of
-sequence number, because the sequence number is 32 bits and might wrap.</p>
+ID.  If you want all entries based on their sequence number, use a <a
+href="Match.html">Match</a> instead.  You&#39;re usually better off using
+the timestamp instead of sequence number, because the sequence number is 32
+bits and might wrap.</p>
           
           
 
           
           <div class="method-source-code" id="forward_each-source">
-            <pre><span class="ruby-comment"># File lib/aix/errlog/errlog.rb, line 167</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">forward_each</span>(<span class="ruby-value">match:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-value">sequence:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
-  <span class="ruby-identifier">raise</span> <span class="ruby-string">&#39;match and sequence must not be both specified&#39;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">match</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">sequence</span>
-
-  <span class="ruby-keyword">return</span> <span class="ruby-identifier">to_enum</span>(<span class="ruby-value">:forward_each</span>, <span class="ruby-value">match:</span> <span class="ruby-identifier">match</span>, <span class="ruby-value">sequence:</span> <span class="ruby-identifier">sequence</span>) <span class="ruby-keyword">unless</span> <span class="ruby-identifier">block_given?</span>
+            <pre><span class="ruby-comment"># File lib/aix/errlog/errlog.rb, line 163</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">forward_each</span>(<span class="ruby-identifier">matcher</span>=<span class="ruby-keyword">nil</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+  <span class="ruby-keyword">return</span> <span class="ruby-identifier">to_enum</span>(<span class="ruby-value">:forward_each</span>, <span class="ruby-identifier">matcher</span>) <span class="ruby-keyword">unless</span> <span class="ruby-identifier">block_given?</span>
   <span class="ruby-identifier">set_direction</span> <span class="ruby-value">:forward</span>
-  <span class="ruby-identifier">each</span>(<span class="ruby-value">match:</span> <span class="ruby-identifier">match</span>, <span class="ruby-value">sequence:</span> <span class="ruby-identifier">sequence</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+  <span class="ruby-identifier">each</span>(<span class="ruby-identifier">matcher</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
 <span class="ruby-keyword">end</span></pre>
           </div>
           
@@ -471,7 +466,7 @@ sequence number, because the sequence number is 32 bits and might wrap.</p>
 
           
           <div class="method-source-code" id="match-source">
-            <pre><span class="ruby-comment"># File lib/aix/errlog/errlog.rb, line 211</span>
+            <pre><span class="ruby-comment"># File lib/aix/errlog/errlog.rb, line 199</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">match</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
   <span class="ruby-constant">Errlog</span>.<span class="ruby-identifier">match</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
 <span class="ruby-keyword">end</span></pre>
@@ -489,7 +484,7 @@ sequence number, because the sequence number is 32 bits and might wrap.</p>
         
         <div class="method-heading">
           <span class="method-name">reverse_each</span><span
-            class="method-args">(match: nil, sequence: nil, &amp;block)</span>
+            class="method-args">(matcher=nil, &amp;block)</span>
           
           <span class="method-click-advice">click to toggle source</span>
           
@@ -501,15 +496,11 @@ sequence number, because the sequence number is 32 bits and might wrap.</p>
           <p>Enumerate log <a href="Entry.html">Entry</a> objects in reverse order
 (default is reverse).  If no block is given, returns an enumerator.</p>
 
+<p>The single option is a matcher.  It specifies a match if the passed in
+value is a <a href="Match.html">Match</a>, or a sequence ID otherwise.</p>
+
 <p>sequence specifies the sequence ID to start with.  It will be included in
-the results if specifed</p>
-
-<p>match takes a <a href="Match.html">Match</a> object, which specifies which
-entries to match.</p>
-
-<p>match and sequence must not be both specified.  If neither are specified,
-this simply iterates from the beginning (or from the previous stopped
-position, if find_sequence or find_first have already been called).</p>
+the results if specifed.  The match is a more complex matcher.</p>
 
 <p>An active enumerator can not be nested within another active enumerator,
 including the block form of this.  If you invoke any of the each_ methods
@@ -520,21 +511,20 @@ activate it until the first one has exited.</p>
 
 <p>Warning: if the sequence does not exist (which is common when error logs
 are cleaned), no entries will be returned, even if they follow the sequence
-ID.  If you want all entries based on their sequence number, use match
-instead.  You&#39;re usually better off using the timestamp instead of
-sequence number, because the sequence number is 32 bits and might wrap.</p>
+ID.  If you want all entries based on their sequence number, use a <a
+href="Match.html">Match</a> instead.  You&#39;re usually better off using
+the timestamp instead of sequence number, because the sequence number is 32
+bits and might wrap.</p>
           
           
 
           
           <div class="method-source-code" id="reverse_each-source">
-            <pre><span class="ruby-comment"># File lib/aix/errlog/errlog.rb, line 201</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">reverse_each</span>(<span class="ruby-value">match:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-value">sequence:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
-  <span class="ruby-identifier">raise</span> <span class="ruby-string">&#39;match and sequence must not be both specified&#39;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">match</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">sequence</span>
-
-  <span class="ruby-keyword">return</span> <span class="ruby-identifier">to_enum</span>(<span class="ruby-value">:reverse_each</span>, <span class="ruby-value">match:</span> <span class="ruby-identifier">match</span>, <span class="ruby-value">sequence:</span> <span class="ruby-identifier">sequence</span>) <span class="ruby-keyword">unless</span> <span class="ruby-identifier">block_given?</span>
+            <pre><span class="ruby-comment"># File lib/aix/errlog/errlog.rb, line 191</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">reverse_each</span>(<span class="ruby-identifier">matcher</span>=<span class="ruby-keyword">nil</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+  <span class="ruby-keyword">return</span> <span class="ruby-identifier">to_enum</span>(<span class="ruby-value">:reverse_each</span>, <span class="ruby-identifier">matcher</span>) <span class="ruby-keyword">unless</span> <span class="ruby-identifier">block_given?</span>
   <span class="ruby-identifier">set_direction</span> <span class="ruby-value">:reverse</span>
-  <span class="ruby-identifier">each</span>(<span class="ruby-value">match:</span> <span class="ruby-identifier">match</span>, <span class="ruby-value">sequence:</span> <span class="ruby-identifier">sequence</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+  <span class="ruby-identifier">each</span>(<span class="ruby-identifier">matcher</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
 <span class="ruby-keyword">end</span></pre>
           </div>
           
