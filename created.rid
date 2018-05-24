@@ -1,4 +1,4 @@
-Wed, 23 May 2018 17:58:12 -0600
+Thu, 24 May 2018 11:54:08 -0600
 ./Gemfile	Wed, 23 May 2018 15:11:48 -0600
 ./LICENSE	Wed, 23 May 2018 15:11:48 -0600
 ./lib/aix/errlog.rb	Wed, 23 May 2018 15:11:48 -0600
@@ -9,6 +9,7 @@ Wed, 23 May 2018 17:58:12 -0600
 ./lib/aix/errlog/entry.rb	Wed, 23 May 2018 17:35:53 -0600
 ./lib/aix/errlog/errlog.rb	Wed, 23 May 2018 17:41:37 -0600
 ./main.rdoc	Wed, 23 May 2018 15:11:48 -0600
-./aix-errlog-1.0.0.gem	Wed, 23 May 2018 15:14:58 -0600
 ./README.md	Wed, 23 May 2018 15:18:51 -0600
-./aix-errlog.gemspec	Wed, 23 May 2018 17:05:36 -0600
+./aix-errlog-1.1.0.gem	Wed, 23 May 2018 18:00:51 -0600
+./aix-errlog.gemspec	Thu, 24 May 2018 11:52:56 -0600
+./aix-errlog-1.1.1.gem	Thu, 24 May 2018 11:53:01 -0600

@@ -82,22 +82,27 @@
 <p>Gem::Specification.new do |spec|</p>
 
 <pre class="ruby"><span class="ruby-identifier">spec</span>.<span class="ruby-identifier">name</span>       = <span class="ruby-string">&#39;aix-errlog&#39;</span>
-<span class="ruby-identifier">spec</span>.<span class="ruby-identifier">version</span>    = <span class="ruby-string">&#39;1.1.0&#39;</span>
+<span class="ruby-identifier">spec</span>.<span class="ruby-identifier">version</span>    = <span class="ruby-string">&#39;1.1.1&#39;</span>
 <span class="ruby-identifier">spec</span>.<span class="ruby-identifier">authors</span>    = [<span class="ruby-string">&#39;Taylor C. Richberger&#39;</span>]
 <span class="ruby-identifier">spec</span>.<span class="ruby-identifier">license</span>    = <span class="ruby-string">&#39;MIT&#39;</span>
 <span class="ruby-identifier">spec</span>.<span class="ruby-identifier">email</span>      = <span class="ruby-string">&#39;tcr@absolute-performance.com&#39;</span>
-<span class="ruby-identifier">spec</span>.<span class="ruby-identifier">homepage</span>   = <span class="ruby-string">&#39;https://github.com/absperf/aix-errlog&#39;</span>
+<span class="ruby-identifier">spec</span>.<span class="ruby-identifier">homepage</span>   = <span class="ruby-string">&#39;https://github.com/Taywee/aix-errlog&#39;</span>
 <span class="ruby-identifier">spec</span>.<span class="ruby-identifier">summary</span>    = <span class="ruby-string">&#39;Interface for the AIX error log facilities&#39;</span>
 <span class="ruby-identifier">spec</span>.<span class="ruby-identifier">description</span> = <span class="ruby-string">&#39;Ruby FFI interface for AIX errlog&#39;</span>
-<span class="ruby-identifier">spec</span>.<span class="ruby-identifier">files</span>      = [
-  <span class="ruby-string">&#39;lib/aix/errlog.rb&#39;</span>,
-  <span class="ruby-string">&#39;lib/aix/errlog/constants.rb&#39;</span>,
-  <span class="ruby-string">&#39;lib/aix/errlog/entry.rb&#39;</span>,
-  <span class="ruby-string">&#39;lib/aix/errlog/errlog.rb&#39;</span>,
-  <span class="ruby-string">&#39;lib/aix/errlog/errors.rb&#39;</span>,
-  <span class="ruby-string">&#39;lib/aix/errlog/lib.rb&#39;</span>,
-  <span class="ruby-string">&#39;lib/aix/errlog/match.rb&#39;</span>,
-]
+<span class="ruby-identifier">spec</span>.<span class="ruby-identifier">extra_rdoc_files</span> = [<span class="ruby-string">&#39;main.rdoc&#39;</span>]
+<span class="ruby-identifier">spec</span>.<span class="ruby-identifier">rdoc_options</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-string">&#39;--main&#39;</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-string">&#39;main.rdoc&#39;</span>
+<span class="ruby-identifier">spec</span>.<span class="ruby-identifier">metadata</span> = {
+  <span class="ruby-string">&#39;documentation_uri&#39;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&#39;https://taywee.github.io/aix-errlog/&#39;</span>,
+}
+<span class="ruby-identifier">spec</span>.<span class="ruby-identifier">files</span>      = <span class="ruby-node">%w(
+  lib/aix/errlog.rb
+  lib/aix/errlog/constants.rb
+  lib/aix/errlog/entry.rb
+  lib/aix/errlog/errlog.rb
+  lib/aix/errlog/errors.rb
+  lib/aix/errlog/lib.rb
+  lib/aix/errlog/match.rb
+)</span>
 
 <span class="ruby-identifier">spec</span>.<span class="ruby-identifier">add_dependency</span>(<span class="ruby-string">&#39;ffi&#39;</span>, <span class="ruby-string">&#39;~&gt;1.9&#39;</span>)
 </pre>
