@@ -46,16 +46,16 @@ module AIX
     #   require 'aix/errlog'
     #
     #   AIX::Errlog.open do |log|
-    #     log.forward_each(log.match {
-    #       label.include?('KILL') & (
+    #     log.forward_each(log.match {|m|
+    #       m.label.include?('KILL') & (
     #         (
-    #           (sequence > 1000) &
-    #           (timestamp >= DateTime.new(2017, 1, 1)) &
-    #           (timestamp < DateTime.new(2017, 2, 1))
+    #           (m.sequence > 1000) &
+    #           (m.timestamp >= DateTime.new(2017, 1, 1)) &
+    #           (m.timestamp < DateTime.new(2017, 2, 1))
     #         ) | (
-    #           (sequence < 500) &
-    #           (timestamp >= DateTime.new(2016, 12, 1)) &
-    #           (timestamp < DateTime.new(2017, 1, 1))
+    #           (m.sequence < 500) &
+    #           (m.timestamp >= DateTime.new(2016, 12, 1)) &
+    #           (m.timestamp < DateTime.new(2017, 1, 1))
     #         )
     #       )
     #     }).map(&:label)
@@ -201,33 +201,21 @@ module AIX
       end
 
       ##
-      # Used to build a match expression using a DSL.  This simply calls
-      # instance_eval on Match, so remember the semantics of block scope.  If
-      # you have a local +sequence+ variable, for instance, you'll need to use
-      # an explicit self to escape that:
+      # Used to build a match expression.  This simply yields the Match class.
       #
-      #     [2] pry(main)> AIX::Errlog::Errlog.match { sequence }
-      #     => #<AIX::Errlog::Match:0xeb32a4df @left=:sequence, @operator=nil, @right=nil>
-      #     [3] pry(main)> sequence = 5
-      #     => 5
-      #     [4] pry(main)> AIX::Errlog::Errlog.match { sequence }
-      #     => 5
-      #     [5] pry(main)> AIX::Errlog::Errlog.match { self.sequence }
-      #     => #<AIX::Errlog::Match:0xcb7d8c03 @left=:sequence, @operator=nil, @right=nil>
-      #     [6] pry(main)> AIX::Errlog::Errlog.match { self.sequence > sequence }
-      #     => #<AIX::Errlog::Match:0x7be0bbf5 @left=:sequence, @operator=:gt, @right=5>
+      # A previous version of this used #instance_eval to get a modified self,
+      # but that caused some unsavory issues, especially in respect to instance
+      # variables:
       #
-      # In any case, this function lets you use a block as a shortcut to call a
-      # bunch of public class methods on the Match class, in order to build
-      # complex match expressions, as shown in the summary of this class.
+      #   [1] pry(main)> @x = 7
+      #   => 7
+      #   [2] pry(main)> Object.new.instance_eval {@x}
       #
-      # Warning:  Note that the block for this uses a custom self, through
-      # +instance_eval+, so you won't be able to access instance variables
-      # directly.  You'll have to put them in through locals.  If this isn't a
-      # good enough tradeoff, you can build the Match object directly through
-      # its public methods.
+      # Essentially, you could not use instance variables in the DSL, so you'd
+      # have to reassign everything to locals so they'd be available in the
+      # block.
       def self.match(&block)
-        Match.instance_eval(&block)
+        yield Match
       end
 
       private
